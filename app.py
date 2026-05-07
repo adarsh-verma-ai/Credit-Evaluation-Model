@@ -34,10 +34,11 @@ def train_model():
     # Drop ID
     df = df.drop("Applicant_ID", axis=1)
 
-    # Label encode
-    le = LabelEncoder()
-    df["Education_Level"] = le.fit_transform(df["Education_Level"])
-    df["Loan_Approved"]   = le.fit_transform(df["Loan_Approved"])
+    # Label encode — separate encoders for each column
+    le_edu = LabelEncoder()
+    le_target = LabelEncoder()
+    df["Education_Level"] = le_edu.fit_transform(df["Education_Level"])
+    df["Loan_Approved"]   = le_target.fit_transform(df["Loan_Approved"])
 
     # One-hot encode
     ohe = OneHotEncoder(drop="first", sparse_output=False, handle_unknown="ignore")
@@ -70,7 +71,7 @@ def train_model():
         "F1 Score":  round(f1_score(y_test, y_pred, average="weighted", zero_division=0) * 100, 2),
     }
 
-    return model, scaler, ohe, le, X.columns.tolist(), metrics
+    return model, scaler, ohe, le_edu, X.columns.tolist(), metrics
 
 
 # ─── UI ───────────────────────────────────────────────────────────────────────
@@ -183,4 +184,3 @@ try:
 
 except FileNotFoundError:
     st.error("⚠️ `loan_approval_data.csv` not found. Please add the dataset to the project directory and restart the app.")
-
