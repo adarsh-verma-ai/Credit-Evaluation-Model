@@ -65,9 +65,9 @@ def train_model():
     y_pred = model.predict(X_test_scaled)
     metrics = {
         "Accuracy":  round(accuracy_score(y_test, y_pred) * 100, 2),
-        "Precision": round(precision_score(y_test, y_pred) * 100, 2),
-        "Recall":    round(recall_score(y_test, y_pred) * 100, 2),
-        "F1 Score":  round(f1_score(y_test, y_pred) * 100, 2),
+        "Precision": round(precision_score(y_test, y_pred, average="weighted", zero_division=0) * 100, 2),
+        "Recall":    round(recall_score(y_test, y_pred, average="weighted", zero_division=0) * 100, 2),
+        "F1 Score":  round(f1_score(y_test, y_pred, average="weighted", zero_division=0) * 100, 2),
     }
 
     return model, scaler, ohe, le, X.columns.tolist(), metrics
@@ -183,3 +183,4 @@ try:
 
 except FileNotFoundError:
     st.error("⚠️ `loan_approval_data.csv` not found. Please add the dataset to the project directory and restart the app.")
+
